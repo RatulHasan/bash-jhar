@@ -4,6 +4,7 @@ read -p "Enter domain folder name (without .test): " domain_name
 read -p "Enter root php path: " path_name
 read -p "Enter PHP version (e.g., 7.4, 8.3): " php_version
 
+echo "Step 1: Validating inputs"
 if [ -z "$domain_name" ]; then
     echo "Domain folder name cannot be empty."
     exit 1
@@ -28,6 +29,7 @@ else
     php_version="$php_version"
 fi
 
+echo "Step 2: Checking PHP version and FPM socket"
 php_fpm_socket="/var/run/php/php${php_version}-fpm.sock"
 
 if [ ! -S "$php_fpm_socket" ]; then
@@ -35,6 +37,7 @@ if [ ! -S "$php_fpm_socket" ]; then
     exit 1
 fi
 
+echo "Step 3: Checking and handling existing configuration"
 nginx_config="/etc/nginx/sites-available/$domain_name.test"
 
 if [ -f "$nginx_config" ]; then
@@ -50,6 +53,7 @@ if [ -f "$nginx_config" ]; then
     esac
 fi
 
+echo "Step 4: Creating Nginx configuration"
 nginx_config_content="server {
     listen 127.0.0.1:80;
     server_name $domain_name.test www.$domain_name.test *.$domain_name.test;
@@ -71,10 +75,14 @@ echo "$nginx_config_content" | sudo tee "$nginx_config" > /dev/null
 
 sudo ln -sf "$nginx_config" "/etc/nginx/sites-enabled/"
 
-# Append domain names to /etc/hosts file
+echo "Step 5: Updating /etc/hosts file"
 sudo sed -i "/$domain_name\.test/d" /etc/hosts
 sudo bash -c "echo '127.0.0.1 $domain_name.test www.$domain_name.test *.$domain_name.test' >> /etc/hosts"
 
+echo "Step 6: Restarting Nginx"
 sudo service nginx restart
+
+echo "Step 7: Changing folder permissions"
+sudo chown -R www-data:www-data $domain_folder
 
 echo "Configuration for $domain_name.test with PHP version $php_version has been created and enabled."
