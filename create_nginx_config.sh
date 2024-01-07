@@ -1,7 +1,7 @@
 #!/bin/bash
 
 read -p "Enter domain folder name (without .test): " domain_name
-read -p "Enter index.php path: " path_name
+read -p "Enter root php path: " path_name
 read -p "Enter PHP version (e.g., 7.4, 8.3): " php_version
 
 if [ -z "$domain_name" ]; then
