@@ -1,3 +1,7 @@
+# sudo find / -name "create_nginx_config.sh"
+# alias add_domain="/path/to/create_nginx_config.sh"
+# source ~/.zshrc
+
 #!/bin/bash
 
 read -p "Enter domain folder name (without .test): " domain_name
