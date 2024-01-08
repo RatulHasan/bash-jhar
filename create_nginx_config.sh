@@ -117,7 +117,13 @@ remove_domain() {
         exit 1
     fi
 
-    domain_name="$folder_name.test"
+    # Check if .test is already part of the folder name and adjust accordingly
+    if [[ $folder_name == *".test"* ]]; then
+        domain_name=$folder_name
+    else
+        domain_name="$folder_name.test"
+    fi
+    
     domain_folder="/var/www/html/$folder_name"
 
     echo "Step 2: Removing Nginx configuration..."
