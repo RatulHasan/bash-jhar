@@ -96,6 +96,7 @@ create_domain() {
     fi
 
     echo "Step 6: Restarting Nginx..."
+    sudo nginx -t
     sudo service nginx restart
     sudo systemctl restart nginx
 
@@ -145,6 +146,7 @@ remove_domain() {
     fi
 
     echo "Step 4: Restarting Nginx..."
+    sudo nginx -t
     sudo service nginx restart
     sudo systemctl restart nginx
 
@@ -155,16 +157,16 @@ remove_domain() {
 
 }
 
-read -p "Do you want to create or remove a domain? (create/remove): " action
+read -p "Do you want to create or remove a domain? (C/c or R/r): " action
 
 case "$action" in
-    create)
+    [Cc]|create)
         create_domain
         ;;
-    remove)
+    [Rr]|remove)
         remove_domain
         ;;
     *)
-        echo "Invalid option. Please choose create or remove."
+        echo "Invalid option. Please choose 'C' or 'R' for create or remove."
         ;;
 esac
